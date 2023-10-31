@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PayUp</title>
+    <script type="text/javascript" src="https://cdn.pmnts-sandbox.io/sdk/v1/fatzebra.js"></script>
+</head>
+<div id="fz-iframe"></div>
+<button id="checkoutButton">Check out</button>
+<!--<iframe src="https://paynow-sandbox.pmnts.io/v3/caleb-test-3ds/950e3adf534d4dad8182c92bf99b04dc/AUD/101.43/e9af377cce60b160e4da8511629c5dc4?send_email=true&cards=VISA%2CMasterCard%2CAMEX&iframe=true" />-->
+<script type="text/javascript">
+  localStorage.setItem("fz-access-token", "033bd94b11");
+  const fz = new FatZebra({
+    username: "TEST",
+    test: true
+  })
+  console.log("loading page...")
+
+  window.FatZebra = fz;
+
+  fz.renderPaymentsPage({
+    containerId: 'fz-iframe',
+    customer: {
+      firstName: "John",
+      lastName: "Smith",
+      email: "JohnSmith@fatzebra.com",
+      address: "1 Sydney Street",
+      city: "Sydney",
+      postcode: "2000",
+      state: "NSW",
+      country: "Australia"
+    },
+    paymentIntent: {
+      payment: {
+        amount: 101.43,
+        currency: "AUD",
+        reference: "950e3adf534d4dad8182c92bf99b04dc"
+      },
+      verification: "e9af377cce60b160e4da8511629c5dc4"
+    },
+    options: {
+      tokenizeOnly: true,
+      enableSca: false,
+    }
+  })
+  console.log("should have loaded")
+  fz.on('fz.validation.error', function (event) {
+    console.log(JSON.stringify(event.detail))
+  })
+
+  fz.on('fz.sca.success', function (event) {
+    console.log(JSON.stringify(event.detail))
+  })
+
+  fz.on('fz.sca.error', function (event) {
+    console.log(JSON.stringify(event.detail))
+  })
+
+  fz.on('fz.success', function (event) {
+    console.log(JSON.stringify(event.detail))
+  })
+
+  fz.on('fz.error', function (event) {
+    console.log(JSON.stringify(event.detail))
+  })
+
+  fz.on('fz.payment.success', function (event) {
+    console.log(JSON.stringify(event.detail))
+    alert("Payment Successful!");
+  })
+
+  fz.on('fz.payment.error', function (event) {
+    console.log(JSON.stringify(event.detail))
+    alert("Payment Error!");
+  })
+  
+  const handler = function () {
+    fz.checkout();
+  }
+  document.getElementById('checkoutButton').addEventListener('click', handler);
+
+</script>
+
+</html>
+
